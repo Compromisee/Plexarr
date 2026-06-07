@@ -1,0 +1,215 @@
+<link rel="stylesheet" href="css/site.css">
+<div class="grid-lines"></div>
+<div class="parallax-layer parallax-1"></div>
+<div class="parallax-layer parallax-2"></div>
+<div class="parallax-layer parallax-3"></div>
+
+<div class="mobile-topbar">
+  <div class="logo"><span class="micon" style="color:var(--accent)">terminal</span> Plexarr</div>
+  <div class="mobile-toggle" onclick="toggleSidebar()"><span class="micon">menu</span></div>
+</div>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html">
+      <span class="micon micon-lg" style="color:var(--accent)">terminal</span>
+      <span>Plexarr</span>
+    </a>
+    <div class="version">V2.1.0</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="micon micon-sm">home</span> Home</a>
+    <a href="setup.html" class="nav-link"><span class="micon micon-sm">rocket_launch</span> Setup</a>
+    <a href="lan.html" class="nav-link"><span class="micon micon-sm">wifi</span> LAN / WiFi</a>
+
+    <div class="nav-section">Features</div>
+    <a href="features.html" class="nav-link"><span class="micon micon-sm">view_list</span> All Features</a>
+
+    <div class="nav-section">Documentation</div>
+    <a href="docs.html" class="nav-link"><span class="micon micon-sm">menu_book</span> Overview</a>
+    <a href="api.html" class="nav-link"><span class="micon micon-sm">terminal</span> API Reference</a>
+    <a href="config.html" class="nav-link"><span class="micon micon-sm">settings</span> Configuration</a>
+    <a href="integrations.html" class="nav-link"><span class="micon micon-sm">hub</span> Integrations</a>
+    <a href="troubleshooting.html" class="nav-link"><span class="micon micon-sm">bug_report</span> Troubleshooting</a>
+
+    <div class="nav-section">External</div>
+    <a href="https://github.com/Compromisee/Plexarr" target="_blank" class="nav-link"><span class="micon micon-sm">open_in_new</span> GitHub</a>
+  </nav>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<div class="main-content">
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1 data-text="Plexarr V2.1">Plexarr <span class="accent">V2.1</span></h1>
+    <p class="subtitle">Remote torrent search, auto-renaming, Usenet, file sharing, WiFi download, and Plex library management. Built for Linux Mint servers. Accessible from any device on your LAN.</p>
+    <div class="hero-actions">
+      <a href="setup.html" class="btn primary large"><span class="micon">rocket_launch</span> Get Started</a>
+      <a href="docs.html" class="btn large"><span class="micon">menu_book</span> Documentation</a>
+      <a href="https://github.com/Compromisee/Plexarr" target="_blank" class="btn large"><span class="micon">code</span> View on GitHub</a>
+    </div>
+    <div style="margin-top:20px; display:flex; gap:6px; flex-wrap:wrap;">
+      <span class="badge accent">v2.1.0</span>
+      <span class="badge">Flask</span>
+      <span class="badge">SocketIO</span>
+      <span class="badge">Prometheus</span>
+      <span class="badge">Grafana</span>
+      <span class="badge">Discord</span>
+      <span class="badge">FFmpeg</span>
+      <span class="badge">VPN</span>
+      <span class="badge">SABnzbd</span>
+    </div>
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="container">
+    <h2>Architecture</h2>
+    <div class="mermaid">
+graph TD
+    A[Phone / Tablet] -->|HTTP 8080| D[WiFi Router]
+    B[Laptop / PC] -->|HTTP 8080| D
+    C[Discord Bot] -->|REST API| D
+    D -->|LAN| S[Linux Mint Server]
+    S --> E[Plexarr Flask Server]
+    E -->|SocketIO| F[Screen Stream]
+    E -->|REST| G[qBittorrent]
+    E -->|REST| H[SABnzbd]
+    E -->|REST| I[TMDB / Jikan / TVDB]
+    E -->|Webhook| J[Discord]
+    E -->|Metrics| K[Prometheus]
+    E -->|CLI| L[Windscribe VPN]
+    E -->|Proxy| M[Cloudflare Solver]
+    E -->|Download| N[Rapidgator / URLs]
+    E -->|Post-Process| O[FFmpeg]
+    E -->|Watch| W[Watch Folder]
+    E -->|WiFi Upload| U[WiFi Auto-Categorize]
+    G -->|Files| P[Plex Library Folders]
+    H -->|Files| P
+    W -->|Auto-Categorize| P
+    U -->|Auto-Categorize| P
+    O -->|Default Tracks| P
+    Q[PyWebView Desktop Client] -->|HTTP 8080| D
+    </div>
+    <p>Plexarr is a self-hosted media command suite that runs on your Linux Mint server and gives you a single web interface to search torrents, query Usenet, auto-sort downloads into Plex paths, monitor progress, and push files over your local network.</p>
+    <div class="box tip">
+      <h4><span class="micon" style="font-size:14px;vertical-align:middle">tips_and_updates</span> Design</h4>
+      <p>Soft gradients, animated dot-matrix grid, morning parallax, Space Grotesk headings, Inter body text, and JetBrains Mono for code. Built for people who manage their own infrastructure.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="container">
+    <h2>Core Features</h2>
+    <div class="features">
+      <div class="feature-card">
+        <div class="icon"><span class="micon micon-xl">search</span></div>
+        <h3>Torrent Search</h3>
+        <p>Search across Nyaa.si, AnimeTosho, YTS, EZTV, and TorrentGalaxy. Results sorted by seeders. One-click magnet relay to qBittorrent. Optional Cloudflare solver for protected sites.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><span class="micon micon-xl">auto_awesome</span></div>
+        <h3>Auto Renamer</h3>
+        <p>guessit-powered parser strips 100+ release tags and sorts files into Plex-compliant paths. TV, movies, anime, and music handled automatically.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><span class="micon micon-xl">newspaper</span></div>
+        <h3>Usenet / NZB</h3>
+        <p>SABnzbd integration for NZB downloads. Search NZBGeek and send NZBs directly to SABnzbd. Queue, pause, resume, and monitor Usenet downloads from the same UI.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><span class="micon micon-xl">devices</span></div>
+        <h3>LAN Access</h3>
+        <p>Serve the web UI on your local network. Access from Windows, macOS, phones, or tablets without installing anything. Auto-detect server presence.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><span class="micon micon-xl">cloud_upload</span></div>
+        <h3>WiFi File Share</h3>
+        <p>Upload files from any phone or laptop on the same WiFi network. Auto-detects media type, renames to Plex format, and places files in the correct library folder. No destination selection needed.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><span class="micon micon-xl">movie</span></div>
+        <h3>FFmpeg Post-Process</h3>
+        <p>Auto-set default English audio and subtitle tracks. Detects naming variations like MediaHub-eng, Pahe.in, etc. Strip unwanted languages.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><span class="micon micon-xl">monitoring</span></div>
+        <h3>Prometheus / Grafana</h3>
+        <p>Export metrics to Prometheus. Pre-built Grafana dashboard with active torrents, download speeds, and upload stats.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><span class="micon micon-xl">chat</span></div>
+        <h3>Discord Integration</h3>
+        <p>Webhook notifications for torrents, uploads, and progress. Full Doplarr-style bot with slash commands for requests and status.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><span class="micon micon-xl">vpn_key</span></div>
+        <h3>VPN Support</h3>
+        <p>Windscribe CLI integration. Connect, disconnect, and check status from the web UI. Auto-connect on server start.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><span class="micon micon-xl">smart_display</span></div>
+        <h3>Remote View</h3>
+        <p>Optional JPEG screen stream over SocketIO. Click to control the server mouse. Keyboard input support. Disabled by default.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><span class="micon micon-xl">database</span></div>
+        <h3>Metadata Enrichment</h3>
+        <p>TMDB for movies and TV. Jikan v4 for anime. Cover art and backdrops. Optional TVDB for season data. All titles matched and cleaned before sorting.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><span class="micon micon-xl">link</span></div>
+        <h3>URL Downloader</h3>
+        <p>Download from Rapidgator (premium or free) and generic direct URLs. Queue multiple files. Auto-process with FFmpeg.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><span class="micon micon-xl">playlist_add</span></div>
+        <h3>Batch Queue</h3>
+        <p>Select multiple torrents from search results and add them all at once. Queue up to 50 items. Monitor batch progress.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><span class="micon micon-xl">folder_open</span></div>
+        <h3>Watch Folder Auto-Categorize</h3>
+        <p>Drop files into a monitored folder and Plexarr auto-detects media type (TV, movie, anime, music) and sorts them into Plex-compliant paths. Single-file and batch API endpoints included.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon"><span class="micon micon-xl">desktop_windows</span></div>
+        <h3>Desktop Client</h3>
+        <p>Cross-platform PyWebView client for Windows, macOS, and Linux. System tray, LAN discovery, keyboard shortcuts, mini mode, debug console, and multi-server profiles.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="container">
+    <h2>Quick Start</h2>
+    <p>Install the server on your Linux Mint media box. Open the web UI from any device on the same network.</p>
+    <pre><code>cd server/
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python app.py</code></pre>
+    <p>Then open <code>http://your-server-ip:8080</code> from any device. Full setup wizard available.</p>
+    <div class="hero-actions" style="margin-top:20px;">
+      <a href="setup.html" class="btn primary"><span class="micon">arrow_forward</span> Setup Wizard</a>
+      <a href="docs.html" class="btn"><span class="micon">menu_book</span> Read Docs</a>
+    </div>
+  </div>
+</section>
+
+<div class="footer">
+  <p>Plexarr V2.1 — <a href="https://github.com/Compromisee/Plexarr">github.com/Compromisee/Plexarr</a></p>
+  <p style="margin-top:6px; color:var(--text-3)">Space Grotesk. Inter. JetBrains Mono. Soft gradients. No emojis. Full control.</p>
+</div>
+
+</div>
+
+<div id="toast-container" style="position:fixed; bottom:16px; right:16px; display:flex; flex-direction:column; gap:6px; z-index:9999;"></div>
+
+<script src="js/site.js"></script>
+</body>
+</html>

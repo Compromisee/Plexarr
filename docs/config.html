@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configuration — Plexarr</title>
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+<div class="dot-matrix"></div>
+<div class="grid-lines"></div>
+<div class="parallax-layer parallax-1"></div>
+<div class="parallax-layer parallax-2"></div>
+<div class="parallax-layer parallax-3"></div>
+
+<div class="mobile-topbar">
+  <div class="logo"><span class="micon" style="color:var(--accent)">terminal</span> Plexarr</div>
+  <div class="mobile-toggle" onclick="toggleSidebar()"><span class="micon">menu</span></div>
+</div>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html">
+      <span class="micon micon-lg" style="color:var(--accent)">terminal</span>
+      <span>Plexarr</span>
+    </a>
+    <div class="version">V2.1.0</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="micon micon-sm">home</span> Home</a>
+    <a href="setup.html" class="nav-link"><span class="micon micon-sm">rocket_launch</span> Setup</a>
+    <a href="lan.html" class="nav-link"><span class="micon micon-sm">wifi</span> LAN / WiFi</a>
+
+    <div class="nav-section">Features</div>
+    <a href="features.html" class="nav-link"><span class="micon micon-sm">view_list</span> All Features</a>
+
+    <div class="nav-section">Documentation</div>
+    <a href="docs.html" class="nav-link"><span class="micon micon-sm">menu_book</span> Overview</a>
+    <a href="api.html" class="nav-link"><span class="micon micon-sm">terminal</span> API Reference</a>
+    <a href="config.html" class="nav-link"><span class="micon micon-sm">settings</span> Configuration</a>
+    <a href="integrations.html" class="nav-link"><span class="micon micon-sm">hub</span> Integrations</a>
+    <a href="troubleshooting.html" class="nav-link"><span class="micon micon-sm">bug_report</span> Troubleshooting</a>
+
+    <div class="nav-section">External</div>
+    <a href="https://github.com/Compromisee/Plexarr" target="_blank" class="nav-link"><span class="micon micon-sm">open_in_new</span> GitHub</a>
+  </nav>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<div class="main-content">
+
+<section class="hero" style="padding:60px 20px 40px;">
+  <div class="hero-inner">
+    <h1 data-text="Configuration">Configuration</h1>
+    <p class="subtitle">All settings, keys, paths, and security reference for Plexarr V2.1.</p>
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="container">
+
+    <h2 id="config">Config.json</h2>
+    <p>All settings live in <code>config.json</code> next to <code>app.py</code>. The web UI Settings tab exposes all fields live.</p>
+    <table>
+      <tr><th>Key</th><th>Default</th><th>Description</th></tr>
+      <tr><td><code>server.host</code></td><td><code>0.0.0.0</code></td><td>Bind address</td></tr>
+      <tr><td><code>server.port</code></td><td><code>8080</code></td><td>HTTP port</td></tr>
+      <tr><td><code>server.debug</code></td><td><code>false</code></td><td>Debug mode</td></tr>
+      <tr><td><code>server.verbose</code></td><td><code>false</code></td><td>Verbose logging</td></tr>
+      <tr><td><code>paths.tv</code></td><td><code>/media/plex/TV Shows</code></td><td>TV library root</td></tr>
+      <tr><td><code>paths.movies</code></td><td><code>/media/plex/Movies</code></td><td>Movie library root</td></tr>
+      <tr><td><code>paths.anime</code></td><td><code>/media/plex/Anime</code></td><td>Anime library root</td></tr>
+      <tr><td><code>paths.music</code></td><td><code>/media/plex/Music</code></td><td>Music library root</td></tr>
+      <tr><td><code>qbittorrent.host</code></td><td><code>http://localhost:8080</code></td><td>qBittorrent Web UI URL</td></tr>
+      <tr><td><code>qbittorrent.username</code></td><td><code>admin</code></td><td>qBittorrent login</td></tr>
+      <tr><td><code>qbittorrent.password</code></td><td><code>adminadmin</code></td><td>qBittorrent password</td></tr>
+      <tr><td><code>tmdb.api_key</code></td><td><code>""</code></td><td>TMDB API key</td></tr>
+      <tr><td><code>tmdb.fetch_cover_art</code></td><td><code>true</code></td><td>Fetch movie/show posters</td></tr>
+      <tr><td><code>tvdb.api_key</code></td><td><code>""</code></td><td>TVDB API key (optional)</td></tr>
+      <tr><td><code>discord.webhook_url</code></td><td><code>""</code></td><td>Discord webhook for notifications</td></tr>
+      <tr><td><code>screen_stream.enabled</code></td><td><code>false</code></td><td>Enable screen capture</td></tr>
+      <tr><td><code>remote_control.enabled</code></td><td><code>false</code></td><td>Enable mouse/keyboard remote</td></tr>
+      <tr><td><code>vpn.enabled</code></td><td><code>false</code></td><td>Enable VPN integration</td></tr>
+      <tr><td><code>vpn.provider</code></td><td><code>windscribe</code></td><td>VPN provider</td></tr>
+      <tr><td><code>vpn.cli_path</code></td><td><code>/usr/bin/windscribe</code></td><td>VPN CLI path</td></tr>
+      <tr><td><code>cloudflare_solver.enabled</code></td><td><code>false</code></td><td>Enable Cloudflare bypass</td></tr>
+      <tr><td><code>ffmpeg.enabled</code></td><td><code>true</code></td><td>Enable FFmpeg post-processing</td></tr>
+      <tr><td><code>ffmpeg.default_audio_lang</code></td><td><code>eng</code></td><td>Default audio language</td></tr>
+      <tr><td><code>ffmpeg.default_subtitle_lang</code></td><td><code>eng</code></td><td>Default subtitle language</td></tr>
+      <tr><td><code>ffmpeg.post_process_downloads</code></td><td><code>true</code></td><td>Auto-process after download</td></tr>
+      <tr><td><code>url_downloader.rapidgator.premium</code></td><td><code>false</code></td><td>Rapidgator premium mode</td></tr>
+      <tr><td><code>url_downloader.rapidgator.api_key</code></td><td><code>""</code></td><td>Rapidgator API key</td></tr>
+      <tr><td><code>batch_download.max_queue</code></td><td><code>50</code></td><td>Max batch queue size</td></tr>
+      <tr><td><code>naming.variations</code></td><td><code>[...]</code></td><td>Custom naming groups to detect</td></tr>
+      <tr><td><code>watch_folder.enabled</code></td><td><code>false</code></td><td>Enable background watch folder</td></tr>
+      <tr><td><code>watch_folder.dir</code></td><td><code>""</code></td><td>Folder to monitor (default uses downloads)</td></tr>
+      <tr><td><code>watch_folder.interval</code></td><td><code>5</code></td><td>Poll interval in seconds</td></tr>
+      <tr><td><code>watch_folder.auto_start</code></td><td><code>true</code></td><td>Start watcher on server boot</td></tr>
+      <tr><td><code>sabnzbd.enabled</code></td><td><code>false</code></td><td>Enable SABnzbd integration</td></tr>
+      <tr><td><code>sabnzbd.host</code></td><td><code>http://localhost:8080</code></td><td>SABnzbd API URL</td></tr>
+      <tr><td><code>sabnzbd.api_key</code></td><td><code>""</code></td><td>SABnzbd API key</td></tr>
+      <tr><td><code>sabnzbd.categories_map</code></td><td><code>{}</code></td><td>Category to Plex path mapping</td></tr>
+      <tr><td><code>nzbgeek.enabled</code></td><td><code>false</code></td><td>Enable NZBGeek search</td></tr>
+      <tr><td><code>nzbgeek.api_key</code></td><td><code>""</code></td><td>NZBGeek API key</td></tr>
+    </table>
+
+    <h2 id="paths">Plex Paths</h2>
+    <p>Plexarr expects your media folders to follow standard Plex directory structure. The auto-renamer outputs:</p>
+    <pre><code>TV Shows/Show Name/Season 01/Show Name - S01E02 - Episode Title.mkv
+Movies/Movie Name (Year)/Movie Name (Year).mkv
+Anime/Anime Name/Season 01/Anime Name - S01E02.mkv
+Music/Artist Name/Album Name/Track Title.mp3</code></pre>
+
+    <h2 id="providers">Torrent Providers</h2>
+    <p>Plexarr ships with six built-in search providers. Cloudflare-protected sites are NOT listed by default.</p>
+    <table>
+      <tr><th>Provider</th><th>Type</th><th>Cloudflare</th><th>Anime-Only</th></tr>
+      <tr><td>Nyaa.si</td><td>Anime</td><td>No</td><td>Yes</td></tr>
+      <tr><td>AnimeTosho</td><td>Anime</td><td>No</td><td>Yes</td></tr>
+      <tr><td>YTS.mx</td><td>Movies</td><td>No</td><td>No</td></tr>
+      <tr><td>EZTV</td><td>TV</td><td>No</td><td>No</td></tr>
+      <tr><td>TorrentGalaxy</td><td>General</td><td>Yes</td><td>No</td></tr>
+      <tr><td>1337x.to</td><td>General</td><td>Yes</td><td>No</td></tr>
+    </table>
+    <p>Enable the Cloudflare solver (<code>cloudflare_solver.enabled</code>) to access protected sites. Requires <code>cloudscraper</code> package.</p>
+    <p>To add a custom provider, subclass <code>BaseProvider</code> in <code>modules/torrent_search.py</code> and implement <code>search(query, category, limit)</code>.</p>
+
+    <h2 id="naming">Naming Variations Detector</h2>
+    <p>Plexarr automatically detects and strips 100+ known naming variations and release tags. Built-in groups include:</p>
+    <pre><code>MediaHub, Pahe.in, HorribleSubs, Erai-raws, SubsPlease, Judas
+YTS, YIFY, RARBG, AMZN, NF, Hulu, CR, Funimation, HIDIVE, VRV
+Dual Audio, Multi-Sub, ESub, HC, KORSUB, REPACK, PROPER
+Extended, UNCUT, Directors Cut, IMAX, Atmos, DV, DoVi, HDR10
+1080p, 720p, 4K, UHD, x264, x265, HEVC, AVC, BluRay, WEB-DL
+WEBRip, DVDRip, BDRip, HDTV, 10-bit, 8-bit, Lossless</code></pre>
+    <p>Add custom variations in <code>config.json</code> under <code>naming.variations</code>. The detector handles non-standard formats like <code>MediaHub - eng</code>, <code>Pahe.in</code>, etc.</p>
+
+    <h2 id="security">Security</h2>
+    <div class="box danger">
+      <h4><span class="micon" style="font-size:14px;vertical-align:middle">warning</span> Warning</h4>
+      <p>Plexarr is designed for trusted LAN environments. It does not include authentication out of the box.</p>
+    </div>
+    <ul>
+      <li><strong>VPN / Tailscale:</strong> Do not expose port 8080 to the internet. Use a VPN for remote access.</li>
+      <li><strong>Reverse Proxy:</strong> If exposing, use nginx or Caddy with HTTPS and basic auth.</li>
+      <li><strong>Remote Control:</strong> Keep <code>remote_control.enabled</code> off unless needed. It allows full mouse/keyboard access.</li>
+      <li><strong>CORS Proxy:</strong> The <code>/proxy</code> endpoint can fetch arbitrary URLs. Restrict access to trusted clients.</li>
+      <li><strong>qBittorrent:</strong> Change the default password immediately. Use localhost binding if possible.</li>
+    </ul>
+
+    <div class="page-nav">
+      <a href="api.html"><span class="micon">arrow_back</span> API Reference</a>
+      <a href="integrations.html">Integrations <span class="micon">arrow_forward</span></a>
+    </div>
+
+  </div>
+</section>
+
+</div>
+
+<div class="footer">
+  <p>Plexarr V2.1 — <a href="https://github.com/Compromisee/Plexarr">github.com/Compromisee/Plexarr</a></p>
+</div>
+
+<div id="toast-container" style="position:fixed; bottom:16px; right:16px; display:flex; flex-direction:column; gap:6px; z-index:9999;"></div>
+
+<script src="js/site.js"></script>
+</body>
+</html>

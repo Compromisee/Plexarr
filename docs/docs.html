@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentation — Plexarr</title>
+<link rel="stylesheet" href="css/site.css">
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+</script>
+</head>
+<body>
+
+<div class="dot-matrix"></div>
+<div class="grid-lines"></div>
+<div class="parallax-layer parallax-1"></div>
+<div class="parallax-layer parallax-2"></div>
+<div class="parallax-layer parallax-3"></div>
+
+<div class="mobile-topbar">
+  <div class="logo"><span class="micon" style="color:var(--accent)">terminal</span> Plexarr</div>
+  <div class="mobile-toggle" onclick="toggleSidebar()"><span class="micon">menu</span></div>
+</div>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html">
+      <span class="micon micon-lg" style="color:var(--accent)">terminal</span>
+      <span>Plexarr</span>
+    </a>
+    <div class="version">V2.1.0</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="micon micon-sm">home</span> Home</a>
+    <a href="setup.html" class="nav-link"><span class="micon micon-sm">rocket_launch</span> Setup</a>
+    <a href="lan.html" class="nav-link"><span class="micon micon-sm">wifi</span> LAN / WiFi</a>
+
+    <div class="nav-section">Features</div>
+    <a href="features.html" class="nav-link"><span class="micon micon-sm">view_list</span> All Features</a>
+
+    <div class="nav-section">Documentation</div>
+    <a href="docs.html" class="nav-link"><span class="micon micon-sm">menu_book</span> Overview</a>
+    <a href="api.html" class="nav-link"><span class="micon micon-sm">terminal</span> API Reference</a>
+    <a href="config.html" class="nav-link"><span class="micon micon-sm">settings</span> Configuration</a>
+    <a href="integrations.html" class="nav-link"><span class="micon micon-sm">hub</span> Integrations</a>
+    <a href="troubleshooting.html" class="nav-link"><span class="micon micon-sm">bug_report</span> Troubleshooting</a>
+
+    <div class="nav-section">External</div>
+    <a href="https://github.com/Compromisee/Plexarr" target="_blank" class="nav-link"><span class="micon micon-sm">open_in_new</span> GitHub</a>
+  </nav>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<div class="main-content">
+
+<section class="hero" style="padding:60px 20px 40px;">
+  <div class="hero-inner">
+    <h1 data-text="Documentation">Documentation</h1>
+    <p class="subtitle">Complete reference for installation, configuration, APIs, and integrations.</p>
+    <div class="hero-actions" style="margin-top:20px;">
+      <a href="https://github.com/Compromisee/Plexarr" target="_blank" class="btn primary"><span class="micon">open_in_new</span> GitHub Repository</a>
+      <a href="setup.html" class="btn"><span class="micon">rocket_launch</span> Setup Wizard</a>
+    </div>
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="container">
+
+    <h2>System Architecture</h2>
+    <div class="mermaid">
+graph TD
+    subgraph "LAN / WiFi Network"
+        A[Browser Client] -->|HTTP 8080| D[Flask Server]
+        B[Phone / Tablet] -->|HTTP 8080| D
+        C[Discord Bot] -->|REST API| D
+    end
+    D -->|SocketIO| E[Screen Stream]
+    D -->|REST| F[qBittorrent]
+    D -->|REST| H[SABnzbd]
+    D -->|REST| G[TMDB / Jikan / TVDB]
+    D -->|Webhook| I[Discord Notifications]
+    D -->|Metrics| J[Prometheus]
+    D -->|CLI| K[Windscribe VPN]
+    D -->|Proxy| L[Cloudflare Solver]
+    D -->|Download| M[Rapidgator / URLs]
+    D -->|Post-Process| N[FFmpeg]
+    D -->|Watch| W[Watch Folder]
+    D -->|WiFi Upload| U[WiFi Auto-Categorize]
+    F -->|Files| O[Plex Library Folders]
+    H -->|Files| O
+    W -->|Auto-Categorize| O
+    U -->|Auto-Categorize| O
+    N -->|Default Tracks| O
+    P[PyWebView Desktop Client] -->|HTTP 8080| A
+    </div>
+
+    <h2>Documentation Categories</h2>
+    <div class="doc-cards">
+      <a href="api.html" class="doc-card">
+        <div class="icon"><span class="micon micon-xl">terminal</span></div>
+        <h3>API Reference</h3>
+        <p>Complete REST API documentation for torrents, search, files, uploads, batch queue, remote control, VPN, FFmpeg, and metrics.</p>
+      </a>
+      <a href="config.html" class="doc-card">
+        <div class="icon"><span class="micon micon-xl">settings</span></div>
+        <h3>Configuration</h3>
+        <p>Config.json keys, Plex paths, torrent providers, naming detector, and security guidelines.</p>
+      </a>
+      <a href="integrations.html" class="doc-card">
+        <div class="icon"><span class="micon micon-xl">hub</span></div>
+        <h3>Integrations</h3>
+        <p>Discord bot, Grafana, Tautulli, Overseerr, VPN, Rapidgator, Cloudflare solver, and FFmpeg post-processing.</p>
+      </a>
+      <a href="troubleshooting.html" class="doc-card">
+        <div class="icon"><span class="micon micon-xl">bug_report</span></div>
+        <h3>Troubleshooting</h3>
+        <p>Common issues and solutions for screen stream, LAN access, qBittorrent, TMDB, Discord, Prometheus, uploads, and more.</p>
+      </a>
+    </div>
+
+    <h2>Installation Quick Reference</h2>
+    <div class="card">
+      <div class="card-title"><span class="micon micon-sm accent">download</span> Server Setup</div>
+      <pre><code>sudo apt update
+sudo apt install python3 python3-pip python3-venv -y
+sudo apt install qbittorrent qbittorrent-nox -y
+sudo apt install python3-tk python3-dev ffmpeg -y
+sudo apt install windscribe-cli -y  # optional
+sudo apt install sabnzbdplus -y  # optional
+
+git clone https://github.com/Compromisee/Plexarr.git
+cd Plexarr/server
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python app.py</code></pre>
+    </div>
+
+    <h2>Watch Folder Quick Start</h2>
+    <div class="card">
+      <div class="card-title"><span class="micon micon-sm accent">folder_open</span> Auto-Categorize Files</div>
+      <pre><code># Enable in config.json or via Settings tab
+{
+  "watch_folder": {
+    "enabled": true,
+    "dir": "/media/plex/Downloads/dropbox",
+    "interval": 5,
+    "auto_start": true
+  }
+}
+
+# Or start via API
+POST /api/watch/start
+{ "watch_dir": "/media/plex/Downloads/dropbox", "interval": 5, "name": "main" }</code></pre>
+      <p>Drop files into the watch folder and Plexarr will auto-detect TV, movie, anime, or music and sort them into the correct Plex path.</p>
+    </div>
+
+    <h2>First Run</h2>
+    <p>The server creates <code>config.json</code> automatically on first run. Access the UI at <code>http://your-server-ip:8080</code>.</p>
+
+    <div class="page-nav">
+      <a href="lan.html"><span class="micon">arrow_back</span> LAN / WiFi</a>
+      <a href="api.html">API Reference <span class="micon">arrow_forward</span></a>
+    </div>
+
+  </div>
+</section>
+
+</div>
+
+<div class="footer">
+  <p>Plexarr V2.1 — <a href="https://github.com/Compromisee/Plexarr">github.com/Compromisee/Plexarr</a></p>
+  <p style="margin-top:6px; color:var(--text-3)">Space Grotesk. Inter. JetBrains Mono. Soft gradients. No emojis. Full control.</p>
+</div>
+
+<div id="toast-container" style="position:fixed; bottom:16px; right:16px; display:flex; flex-direction:column; gap:6px; z-index:9999;"></div>
+
+<script src="js/site.js"></script>
+</body>
+</html>

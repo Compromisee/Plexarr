@@ -1,0 +1,93 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "plexlink-v2",
+    "title": "PlexLink V2",
+    "tags": ["plexlink", "torrents", "media", "server"],
+    "timezone": "browser",
+    "schemaVersion": 36,
+    "refresh": "5s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Active Torrents",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "plexlink_active_torrents",
+            "legendFormat": "Active",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 6, "x": 0, "y": 0 },
+        "fieldConfig": {
+          "defaults": {
+            "color": { "mode": "fixed", "fixedColor": "green" },
+            "mappings": [],
+            "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Download Speed (B/s)",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "plexlink_download_speed_bytes",
+            "legendFormat": "Download",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 9, "x": 6, "y": 0 },
+        "fieldConfig": {
+          "defaults": { "unit": "Bps", "custom": { "fillOpacity": 10, "lineWidth": 2 } }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Upload Speed (B/s)",
+        "type": "timeseries",
+        "targets": [
+          {
+            "expr": "plexlink_upload_speed_bytes",
+            "legendFormat": "Upload",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 9, "x": 15, "y": 0 },
+        "fieldConfig": {
+          "defaults": { "unit": "Bps", "custom": { "fillOpacity": 10, "lineWidth": 2 } }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Torrents Added by Provider",
+        "type": "bargauge",
+        "targets": [
+          {
+            "expr": "sum by (provider) (plexlink_torrent_added_total)",
+            "legendFormat": "{{provider}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+        "options": { "orientation": "horizontal", "displayMode": "gradient" }
+      },
+      {
+        "id": 5,
+        "title": "Files Uploaded by Destination",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "sum by (destination) (plexlink_uploaded_files_total)",
+            "legendFormat": "{{destination}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 }
+      }
+    ]
+  },
+  "overwrite": false
+}

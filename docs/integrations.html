@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integrations — Plexarr</title>
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+<div class="dot-matrix"></div>
+<div class="grid-lines"></div>
+<div class="parallax-layer parallax-1"></div>
+<div class="parallax-layer parallax-2"></div>
+<div class="parallax-layer parallax-3"></div>
+
+<div class="mobile-topbar">
+  <div class="logo"><span class="micon" style="color:var(--accent)">terminal</span> Plexarr</div>
+  <div class="mobile-toggle" onclick="toggleSidebar()"><span class="micon">menu</span></div>
+</div>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html">
+      <span class="micon micon-lg" style="color:var(--accent)">terminal</span>
+      <span>Plexarr</span>
+    </a>
+    <div class="version">V2.1.0</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="micon micon-sm">home</span> Home</a>
+    <a href="setup.html" class="nav-link"><span class="micon micon-sm">rocket_launch</span> Setup</a>
+    <a href="lan.html" class="nav-link"><span class="micon micon-sm">wifi</span> LAN / WiFi</a>
+
+    <div class="nav-section">Features</div>
+    <a href="features.html" class="nav-link"><span class="micon micon-sm">view_list</span> All Features</a>
+
+    <div class="nav-section">Documentation</div>
+    <a href="docs.html" class="nav-link"><span class="micon micon-sm">menu_book</span> Overview</a>
+    <a href="api.html" class="nav-link"><span class="micon micon-sm">terminal</span> API Reference</a>
+    <a href="config.html" class="nav-link"><span class="micon micon-sm">settings</span> Configuration</a>
+    <a href="integrations.html" class="nav-link"><span class="micon micon-sm">hub</span> Integrations</a>
+    <a href="troubleshooting.html" class="nav-link"><span class="micon micon-sm">bug_report</span> Troubleshooting</a>
+
+    <div class="nav-section">External</div>
+    <a href="https://github.com/Compromisee/Plexarr" target="_blank" class="nav-link"><span class="micon micon-sm">open_in_new</span> GitHub</a>
+  </nav>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<div class="main-content">
+
+<section class="hero" style="padding:60px 20px 40px;">
+  <div class="hero-inner">
+    <h1 data-text="Integrations">Integrations</h1>
+    <p class="subtitle">Connect Plexarr to qBittorrent, SABnzbd, Plex, Discord, Grafana, and more.</p>
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="container">
+
+    <h2 id="doplarr">Discord Bot</h2>
+    <p>The included bot mirrors Doplarr functionality. Users request media via slash commands. The bot searches metadata and presents clean results.</p>
+    <table>
+      <tr><th>Command</th><th>Description</th></tr>
+      <tr><td>/status</td><td>Server health check</td></tr>
+      <tr><td>/torrents</td><td>List active downloads with progress bars</td></tr>
+      <tr><td>/request</td><td>Search TMDB/Jikan and show metadata results</td></tr>
+      <tr><td>/search</td><td>Direct torrent search across providers</td></tr>
+      <tr><td>/library</td><td>Plex activity via Tautulli</td></tr>
+    </table>
+
+    <h2 id="tautulli">Tautulli Integration</h2>
+    <p>Tautulli provides deep Plex activity tracking. Configure <code>tautulli.url</code> and <code>tautulli.api_key</code> to enable:</p>
+    <ul>
+      <li><code>/api/tautulli/activity</code> — current stream count, transcodes, direct plays</li>
+      <li>Discord <code>/library</code> slash command</li>
+    </ul>
+    <p>Install: <a href="https://tautulli.com/">tautulli.com</a> (Docker recommended)</p>
+
+    <h2 id="overseerr">Overseerr Integration</h2>
+    <p>Overseerr handles user requests for Plex. Plexarr can proxy its status:</p>
+    <ul>
+      <li><code>/api/overseerr/status</code> — Overseerr health check</li>
+    </ul>
+    <p>Install: <a href="https://overseerr.dev/">overseerr.dev</a> (Docker recommended)</p>
+
+    <h2 id="discord-webhooks">Discord Webhooks</h2>
+    <p>Plexarr sends rich embed notifications to Discord when configured with a webhook URL.</p>
+    <p>Triggered events:</p>
+    <ul>
+      <li>Torrent added (title, size, category)</li>
+      <li>Torrent completed (save path)</li>
+      <li>URL download completed (filename, path, size)</li>
+      <li>FFmpeg processed (audio tracks, subtitle tracks, defaults)</li>
+      <li>Torrent error</li>
+      <li>File uploaded (filename, destination, size)</li>
+      <li>Periodic status ping (every 5 minutes, optional)</li>
+      <li>Progress updates (every 60 seconds for active downloads)</li>
+    </ul>
+    <p>Create a webhook in Discord: Server Settings > Integrations > Webhooks. Copy URL and paste into <code>discord.webhook_url</code>.</p>
+
+    <h2 id="grafana">Grafana Dashboard</h2>
+    <p>The pre-built dashboard includes 5 panels:</p>
+    <ol>
+      <li><strong>Active Torrents</strong> — stat panel showing current count</li>
+      <li><strong>Download Speed</strong> — time series graph (bytes/s)</li>
+      <li><strong>Upload Speed</strong> — time series graph (bytes/s)</li>
+      <li><strong>Torrents Added by Provider</strong> — bar gauge</li>
+      <li><strong>Files Uploaded by Destination</strong> — stat panel</li>
+    </ol>
+    <p>Import via Import Dashboard > Paste JSON in Grafana.</p>
+
+    <h2 id="vpn">Windscribe VPN Integration</h2>
+    <p>Plexarr can control Windscribe VPN from the web UI. Endpoints:</p>
+    <ul>
+      <li><code>/api/vpn/status</code> — check connection state, IP, location</li>
+      <li><code>/api/vpn/connect</code> — connect to a location</li>
+      <li><code>/api/vpn/disconnect</code> — disconnect VPN</li>
+      <li><code>/api/vpn/locations</code> — list available server locations</li>
+    </ul>
+    <p>Enable in config: <code>vpn.enabled</code>, set <code>vpn.cli_path</code> to the Windscribe CLI binary.</p>
+
+    <h2 id="rapidgator">Rapidgator / URL Downloader</h2>
+    <p>Plexarr supports downloading from direct URLs and Rapidgator. Two modes:</p>
+    <h3>Generic Direct Download</h3>
+    <p>Any HTTP URL is downloaded via the server and saved to the configured path.</p>
+    <h3>Rapidgator Premium</h3>
+    <p>Set <code>url_downloader.rapidgator.premium</code> to true and add your <code>api_key</code>. Files are downloaded via the Rapidgator API v2.</p>
+    <h3>Rapidgator Free</h3>
+    <p>Free mode requires captcha solving. Not reliable. The server will warn you and suggest enabling premium or using torrents.</p>
+
+    <h2 id="cloudflare">Cloudflare Solver</h2>
+    <p>Some torrent providers (TorrentGalaxy, 1337x) use Cloudflare protection. These sites are NOT listed by default in the provider search.</p>
+    <p>To enable them:</p>
+    <ol>
+      <li>Install <code>cloudscraper</code>: <code>pip install cloudscraper</code></li>
+      <li>Enable in config: <code>cloudflare_solver.enabled = true</code></li>
+      <li>The providers will automatically appear in the UI</li>
+    </ol>
+    <p>You can also use the CORS proxy with <code>?cf_bypass=1</code> to fetch individual URLs.</p>
+    <p>Status endpoint: <code>/api/cloudflare/status</code></p>
+
+    <h2 id="sabnzbd">SABnzbd Integration</h2>
+    <p>Plexarr controls SABnzbd via its JSON API. Configure <code>sabnzbd.host</code>, <code>sabnzbd.api_key</code>, and <code>sabnzbd.categories_map</code> in <code>config.json</code>.</p>
+    <h3>Endpoints</h3>
+    <ul>
+      <li><code>/api/sabnzbd/queue</code> — current download queue</li>
+      <li><code>/api/sabnzbd/history</code> — completed history</li>
+      <li><code>/api/sabnzbd/add</code> — add NZB by URL or raw upload</li>
+      <li><code>/api/sabnzbd/pause</code> — pause entire queue</li>
+      <li><code>/api/sabnzbd/resume</code> — resume queue</li>
+      <li><code>/api/sabnzbd/delete</code> — delete job by ID</li>
+      <li><code>/api/sabnzbd/speed</code> — speed limit status</li>
+    </ul>
+    <h3>Category Mapping</h3>
+    <pre><code>tv      -> /media/plex/TV Shows
+movies  -> /media/plex/Movies
+anime   -> /media/plex/Anime
+music   -> /media/plex/Music</code></pre>
+    <p>Files downloaded by SABnzbd are automatically sorted into Plex paths if the category matches the configured map.</p>
+
+    <h2 id="nzbgeek">NZBGeek Integration</h2>
+    <p>Search NZBGeek from the web UI and send NZBs directly to SABnzbd.</p>
+    <h3>Search Endpoint</h3>
+    <pre><code>GET /api/nzbgeek/search?q=Movie+Name&amp;category=movies&amp;limit=50</code></pre>
+    <p>Requires <code>nzbgeek.enabled</code> and <code>nzbgeek.api_key</code>. Categories: tv, movies, anime, music, books, other.</p>
+
+    <h2 id="ffmpeg">FFmpeg Post-Processing</h2>
+    <p>After downloading or uploading a media file, Plexarr can run FFmpeg to:</p>
+    <ul>
+      <li>Set default English audio track (or any configured language)</li>
+      <li>Set default English subtitle track</li>
+      <li>Strip unwanted languages (optional)</li>
+      <li>Detect language from non-standard metadata (MediaHub-eng, Pahe.in, etc.)</li>
+    </ul>
+    <p>Configuration:</p>
+    <ul>
+      <li><code>ffmpeg.default_audio_lang</code> — default audio language (default: eng)</li>
+      <li><code>ffmpeg.default_subtitle_lang</code> — default subtitle language (default: eng)</li>
+      <li><code>ffmpeg.wanted_langs</code> — languages to keep (default: ["eng", "jpn"])</li>
+      <li><code>ffmpeg.strip_unwanted_langs</code> — remove non-wanted tracks (default: false)</li>
+      <li><code>ffmpeg.post_process_downloads</code> — auto-run after download (default: true)</li>
+    </ul>
+
+    <h2 id="desktop">Desktop Client (PyWebView)</h2>
+    <p>The Plexarr Desktop Client is a standalone PyWebView application that wraps the server UI in a native window. It runs on Windows, macOS, and Linux.</p>
+    <h3>Features</h3>
+    <ul>
+      <li><strong>System Tray:</strong> Minimize to tray, restore from icon, quick-actions menu.</li>
+      <li><strong>LAN Discovery:</strong> Auto-detect Plexarr servers on the local network.</li>
+      <li><strong>Multi-Server Profiles:</strong> Save and switch between multiple server URLs.</li>
+      <li><strong>Mini Mode:</strong> Compact floating window for quick status checks.</li>
+      <li><strong>Debug Console:</strong> Built-in developer console for troubleshooting.</li>
+      <li><strong>Keyboard Shortcuts:</strong> Global shortcuts for quick actions.</li>
+      <li><strong>Portable Mode:</strong> Run from a USB drive without installation.</li>
+    </ul>
+    <h3>Running from Source</h3>
+    <pre><code>cd client/
+pip install -r requirements.txt
+python main.py</code></pre>
+    <h3>Packaging</h3>
+    <p>See <code>Packing.md</code> for detailed build instructions for Windows (.exe), macOS (.app), and Linux (AppImage / binary).</p>
+
+    <h2>Auto Renamer</h2>
+    <p>The renamer uses <code>guessit</code> to parse filenames, then strips release tags and restructures into Plex folders.</p>
+    <h3>Stripped Tags</h3>
+    <p>1080p, 720p, 4K, x264, x265, HEVC, AVC, BluRay, WEB-DL, WEBRip, DVDRip, BDRip, HDTV, HDR, Dual Audio, ESub, KORSUB, repack names (HorribleSubs, YIFY, RARBG, YTS, etc.), 10-bit, 8-bit, and bracketed groups.</p>
+    <h3>API</h3>
+    <pre><code>POST /api/sort
+path=/media/plex/Downloads/movie.mkv&amp;media_type=movie
+
+POST /api/sort/batch
+directory=/media/plex/Downloads/unsorted</code></pre>
+
+    <h2>Screen Stream</h2>
+    <p>Uses <code>mss</code> to capture the primary monitor, <code>Pillow</code> to JPEG-compress, and SocketIO to broadcast base64 frames to all connected clients.</p>
+    <p>Clicking on the stream image sends mouse coordinates to the server via <code>/api/remote/mouse</code>. Keyboard input is supported via the text panel.</p>
+    <p>Disabled by default for performance and security.</p>
+
+    <h2>CORS Proxy</h2>
+    <p><code>/proxy?url=https://...</code> forwards any HTTP request through the server. This allows the client web UI to fetch tracker pages and torrent files without browser CORS restrictions.</p>
+    <p>Add <code>?cf_bypass=1</code> to use the Cloudflare solver for a single request.</p>
+
+    <h2>File Upload &amp; Browser</h2>
+    <p>Drag and drop files from any client into the server. Browse directory trees. Download files back. Path traversal is blocked. Configurable file size limits and extension whitelists.</p>
+
+    <div class="page-nav">
+      <a href="config.html"><span class="micon">arrow_back</span> Configuration</a>
+      <a href="troubleshooting.html">Troubleshooting <span class="micon">arrow_forward</span></a>
+    </div>
+
+  </div>
+</section>
+
+</div>
+
+<div class="footer">
+  <p>Plexarr V2.1 — <a href="https://github.com/Compromisee/Plexarr">github.com/Compromisee/Plexarr</a></p>
+</div>
+
+<div id="toast-container" style="position:fixed; bottom:16px; right:16px; display:flex; flex-direction:column; gap:6px; z-index:9999;"></div>
+
+<script src="js/site.js"></script>
+</body>
+</html>

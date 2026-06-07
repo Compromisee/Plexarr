@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Troubleshooting — Plexarr</title>
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+<div class="dot-matrix"></div>
+<div class="grid-lines"></div>
+<div class="parallax-layer parallax-1"></div>
+<div class="parallax-layer parallax-2"></div>
+<div class="parallax-layer parallax-3"></div>
+
+<div class="mobile-topbar">
+  <div class="logo"><span class="micon" style="color:var(--accent)">terminal</span> Plexarr</div>
+  <div class="mobile-toggle" onclick="toggleSidebar()"><span class="micon">menu</span></div>
+</div>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html">
+      <span class="micon micon-lg" style="color:var(--accent)">terminal</span>
+      <span>Plexarr</span>
+    </a>
+    <div class="version">V2.1.0</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="micon micon-sm">home</span> Home</a>
+    <a href="setup.html" class="nav-link"><span class="micon micon-sm">rocket_launch</span> Setup</a>
+    <a href="lan.html" class="nav-link"><span class="micon micon-sm">wifi</span> LAN / WiFi</a>
+
+    <div class="nav-section">Features</div>
+    <a href="features.html" class="nav-link"><span class="micon micon-sm">view_list</span> All Features</a>
+
+    <div class="nav-section">Documentation</div>
+    <a href="docs.html" class="nav-link"><span class="micon micon-sm">menu_book</span> Overview</a>
+    <a href="api.html" class="nav-link"><span class="micon micon-sm">terminal</span> API Reference</a>
+    <a href="config.html" class="nav-link"><span class="micon micon-sm">settings</span> Configuration</a>
+    <a href="integrations.html" class="nav-link"><span class="micon micon-sm">hub</span> Integrations</a>
+    <a href="troubleshooting.html" class="nav-link"><span class="micon micon-sm">bug_report</span> Troubleshooting</a>
+
+    <div class="nav-section">External</div>
+    <a href="https://github.com/Compromisee/Plexarr" target="_blank" class="nav-link"><span class="micon micon-sm">open_in_new</span> GitHub</a>
+  </nav>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<div class="main-content">
+
+<section class="hero" style="padding:60px 20px 40px;">
+  <div class="hero-inner">
+    <h1 data-text="Troubleshooting">Troubleshooting</h1>
+    <p class="subtitle">Common issues and solutions for Plexarr V2.1.</p>
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="container">
+
+    <h2>General Issues</h2>
+    <table>
+      <tr><th>Issue</th><th>Solution</th></tr>
+      <tr><td>Screen stream is black</td><td>Ensure a graphical session is active. On headless servers, install a dummy X display (xvfb).</td></tr>
+      <tr><td>Client shows Offline</td><td>Check firewall with <code>sudo ufw allow 8080/tcp</code>. Verify with <code>curl http://server-ip:8080/health</code>.</td></tr>
+      <tr><td>qBittorrent add fails</td><td>Verify Web UI is enabled and credentials match config. Check <code>/api/qb/categories</code>.</td></tr>
+      <tr><td>Auto sort misidentifies anime</td><td>Enable <code>auto_sort.prefer_anime</code> and select <code>anime</code> media type in the upload panel.</td></tr>
+      <tr><td>TMDB search returns nothing</td><td>Verify your TMDB API key is active. Keys may take a few minutes to propagate after creation.</td></tr>
+      <tr><td>Discord webhooks not firing</td><td>Verify the webhook URL is correct. Test with <code>curl -X POST -H "Content-Type: application/json" -d '{"content":"test"}' URL</code>.</td></tr>
+      <tr><td>Prometheus metrics empty</td><td>Ensure <code>prometheus.enabled</code> is true. Visit <code>/prometheus/metrics</code> directly.</td></tr>
+      <tr><td>File upload too large</td><td>Increase <code>uploads.max_size_mb</code> in config. Check Flask/WSGI limits if using a reverse proxy.</td></tr>
+      <tr><td>Phone cannot connect</td><td>Verify phone and server are on same WiFi subnet. Check router isolation settings.</td></tr>
+      <tr><td>FFmpeg not found</td><td>Install with <code>sudo apt install ffmpeg</code>. Set correct path in <code>ffmpeg.path</code>.</td></tr>
+      <tr><td>VPN not working</td><td>Verify <code>windscribe-cli</code> is installed and logged in. Check <code>vpn.cli_path</code>.</td></tr>
+      <tr><td>Cloudflare sites fail</td><td>Install <code>cloudscraper</code>. Enable <code>cloudflare_solver.enabled</code>.</td></tr>
+      <tr><td>Rapidgator free fails</td><td>Rapidgator free requires captcha. Use premium API or switch to torrents.</td></tr>
+      <tr><td>SABnzbd queue empty</td><td>Verify SABnzbd is running and API key is correct. Check <code>sabnzbd.host</code> includes <code>/sabnzbd</code> path.</td></tr>
+      <tr><td>NZBGeek search returns no results</td><td>Verify <code>nzbgeek.api_key</code> is valid. Check category spelling.</td></tr>
+      <tr><td>Watch folder not processing files</td><td>Verify <code>watch_folder.enabled</code> is true and the directory exists. Check server logs for permission errors. The watcher only processes files that appear after it starts; restart the watcher to re-scan.</td></tr>
+      <tr><td>Files mis-categorized</td><td>Use <code>/api/naming/detect</code> to see how Plexarr parsed the filename. Add custom variations to <code>naming.variations</code> if needed. Enable <code>auto_sort.prefer_anime</code> for ambiguous anime titles.</td></tr>
+      <tr><td>WiFi upload fails</td><td>Check <code>/api/upload/wifi/status</code> for size limits and allowed extensions. Ensure the staging directory exists and is writable. Verify server and client are on the same subnet.</td></tr>
+      <tr><td>WiFi upload returns 400</td><td>Ensure the file extension is in the allowed list. Check <code>uploads.max_size_mb</code> in config. Try uploading a single file first to isolate batch issues.</td></tr>
+    </table>
+
+    <h2>Connection &amp; Network</h2>
+    <div class="box tip">
+      <h4><span class="micon" style="font-size:14px;vertical-align:middle">tips_and_updates</span> LAN Quick Checks</h4>
+      <p>1. Check server is bound to <code>0.0.0.0</code> not <code>127.0.0.1</code>.<br>2. Verify firewall: <code>sudo ufw status</code> or <code>sudo iptables -L</code>.<br>3. Test with <code>curl http://server-ip:8080/health</code> from another machine.<br>4. If using a VPN, ensure the VPN interface is included in binding.</p>
+    </div>
+
+    <h2>Performance</h2>
+    <ul>
+      <li>Screen stream uses significant CPU. Keep it disabled unless needed.</li>
+      <li>Batch queue over 20 items may slow down the UI refresh rate.</li>
+      <li>FFmpeg post-processing on large files can take minutes. Monitor via the web UI.</li>
+      <li>Cloudflare solver adds latency. Only enable for sites that need it.</li>
+    </ul>
+
+    <h2>Logs</h2>
+    <p>Enable verbose logging in Settings or set <code>server.verbose</code> to <code>true</code> in <code>config.json</code>. Logs are printed to the terminal and optionally to a file if configured.</p>
+    <pre><code>tail -f plexarr.log</code></pre>
+
+    <div class="page-nav">
+      <a href="integrations.html"><span class="micon">arrow_back</span> Integrations</a>
+      <a href="docs.html">Docs Overview <span class="micon">arrow_forward</span></a>
+    </div>
+
+  </div>
+</section>
+
+</div>
+
+<div class="footer">
+  <p>Plexarr V2.1 — <a href="https://github.com/Compromisee/Plexarr">github.com/Compromisee/Plexarr</a></p>
+  <p style="margin-top:6px; color:var(--text-3)">Space Grotesk. Inter. JetBrains Mono. Soft gradients. No emojis. Full control.</p>
+</div>
+
+<div id="toast-container" style="position:fixed; bottom:16px; right:16px; display:flex; flex-direction:column; gap:6px; z-index:9999;"></div>
+
+<script src="js/site.js"></script>
+</body>
+</html>

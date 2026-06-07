@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Reference — Plexarr</title>
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+<div class="dot-matrix"></div>
+<div class="grid-lines"></div>
+<div class="parallax-layer parallax-1"></div>
+<div class="parallax-layer parallax-2"></div>
+<div class="parallax-layer parallax-3"></div>
+
+<div class="mobile-topbar">
+  <div class="logo"><span class="micon" style="color:var(--accent)">terminal</span> Plexarr</div>
+  <div class="mobile-toggle" onclick="toggleSidebar()"><span class="micon">menu</span></div>
+</div>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html">
+      <span class="micon micon-lg" style="color:var(--accent)">terminal</span>
+      <span>Plexarr</span>
+    </a>
+    <div class="version">V2.1.0</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="micon micon-sm">home</span> Home</a>
+    <a href="setup.html" class="nav-link"><span class="micon micon-sm">rocket_launch</span> Setup</a>
+    <a href="lan.html" class="nav-link"><span class="micon micon-sm">wifi</span> LAN / WiFi</a>
+
+    <div class="nav-section">Features</div>
+    <a href="features.html" class="nav-link"><span class="micon micon-sm">view_list</span> All Features</a>
+
+    <div class="nav-section">Documentation</div>
+    <a href="docs.html" class="nav-link"><span class="micon micon-sm">menu_book</span> Overview</a>
+    <a href="api.html" class="nav-link"><span class="micon micon-sm">terminal</span> API Reference</a>
+    <a href="config.html" class="nav-link"><span class="micon micon-sm">settings</span> Configuration</a>
+    <a href="integrations.html" class="nav-link"><span class="micon micon-sm">hub</span> Integrations</a>
+    <a href="troubleshooting.html" class="nav-link"><span class="micon micon-sm">bug_report</span> Troubleshooting</a>
+
+    <div class="nav-section">External</div>
+    <a href="https://github.com/Compromisee/Plexarr" target="_blank" class="nav-link"><span class="micon micon-sm">open_in_new</span> GitHub</a>
+  </nav>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<div class="main-content">
+
+<section class="hero" style="padding:60px 20px 40px;">
+  <div class="hero-inner">
+    <h1 data-text="API Reference">API Reference</h1>
+    <p class="subtitle">Complete REST and WebSocket endpoint documentation for Plexarr V2.1.</p>
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="container">
+
+    <h2 id="torrents">Torrents</h2>
+    <h3>List Torrents</h3>
+    <pre><code>GET /api/torrents?status=all</code></pre>
+    <h3>Add Magnet</h3>
+    <pre><code>POST /api/torrent/add
+Content-Type: application/x-www-form-urlencoded
+
+magnet=magnet:?xt=...&amp;category=downloads&amp;media_type=tv&amp;count=1</code></pre>
+    <h3>Pause / Resume / Delete</h3>
+    <pre><code>POST /api/torrent/pause
+POST /api/torrent/resume
+POST /api/torrent/delete
+
+hash=TORRENT_HASH&amp;delete_files=false</code></pre>
+    <h3>Speed Stats</h3>
+    <pre><code>GET /api/qb/speed</code></pre>
+    <h3>Categories</h3>
+    <pre><code>GET /api/qb/categories</code></pre>
+
+    <h2 id="search">Search</h2>
+    <h3>Torrent Search</h3>
+    <pre><code>GET /api/search?q=Shingeki+no+Kyojin&amp;provider=nyaa.si&amp;type=anime&amp;limit=50&amp;enrich=true</code></pre>
+    <h3>Metadata Search</h3>
+    <pre><code>GET /api/metadata/search?q=Breaking+Bad&amp;type=tv</code></pre>
+    <h3>Enrich Torrent</h3>
+    <pre><code>GET /api/metadata/enrich?title=Movie.Name.2024.1080p&amp;type=movie</code></pre>
+    <h3>Cover Art</h3>
+    <pre><code>GET /api/metadata/cover?title=Movie+Name&amp;type=movie</code></pre>
+    <h3>Seasons</h3>
+    <pre><code>GET /api/metadata/seasons?source=tmdb&amp;id=1234&amp;media_type=tv</code></pre>
+    <h3>Episodes</h3>
+    <pre><code>GET /api/metadata/episodes?source=tmdb&amp;id=1234&amp;season=1&amp;media_type=tv</code></pre>
+
+    <h2 id="anime">Anime Search</h2>
+    <h3>Dedicated Anime Endpoint</h3>
+    <pre><code>GET /api/search/anime?q=Attack+on+Titan&amp;category=Anime&amp;limit=50&amp;enrich=true</code></pre>
+    <p>This endpoint only queries Nyaa.si and AnimeTosho, returning results sorted by seeders. Supports Jikan metadata enrichment for cover art and descriptions.</p>
+
+    <h2 id="files">Files</h2>
+    <h3>Browse</h3>
+    <pre><code>GET /api/files?root=downloads&amp;subpath=folder/subfolder</code></pre>
+    <h3>Download</h3>
+    <pre><code>GET /api/download?root=downloads&amp;subpath=file.mkv</code></pre>
+
+    <h2 id="upload">Upload</h2>
+    <pre><code>POST /api/upload
+Content-Type: multipart/form-data
+
+file: [binary]
+destination: downloads | tv | movies | anime | music
+sort: true | false
+media_type: auto | tv | movie | anime | music</code></pre>
+
+    <h2 id="upload-wifi">WiFi Auto-Categorize Upload</h2>
+    <h3>Upload Files (Auto-Detect)</h3>
+    <pre><code>POST /api/upload/wifi
+Content-Type: multipart/form-data
+
+file: [binary]
+file: [binary]  # multiple files supported</code></pre>
+    <p>Upload files from any device on the same WiFi network. The server auto-detects media type, strips release tags, renames to Plex format, and moves the file to the correct library path. No destination parameter required.</p>
+    <p>Response for each file:</p>
+    <pre><code>{
+  "success": true,
+  "uploaded_count": 2,
+  "error_count": 0,
+  "files": [
+    { "file": "movie.mkv", "path": "/media/plex/Movies/...", "type": "movies", "size": 2147483648 },
+    { "file": "show.s01e02.mkv", "path": "/media/plex/TV Shows/...", "type": "tv", "size": 1073741824 }
+  ],
+  "errors": []
+}</code></pre>
+
+    <h3>Upload Status</h3>
+    <pre><code>GET /api/upload/wifi/status</code></pre>
+    <p>Returns max upload size, allowed extensions, and staging directory info.</p>
+
+    <h2 id="url">URL Download</h2>
+    <h3>Download Single URL</h3>
+    <pre><code>POST /api/download/url
+Content-Type: application/x-www-form-urlencoded
+
+url=https://rapidgator.net/file/...&amp;category=downloads</code></pre>
+    <h3>Queue Multiple URLs</h3>
+    <pre><code>POST /api/download/queue
+Content-Type: application/json
+
+{ "urls": ["url1", "url2"], "category": "downloads" }</code></pre>
+
+    <h2 id="batch">Batch Torrent Queue</h2>
+    <h3>Add Batch</h3>
+    <pre><code>POST /api/batch/add
+Content-Type: application/json
+
+{
+  "items": [
+    { "type": "magnet", "source": "magnet:?xt=...", "title": "Show S01E01", "category": "tv" },
+    { "type": "magnet", "source": "magnet:?xt=...", "title": "Show S01E02", "category": "tv" }
+  ]
+}</code></pre>
+    <h3>List Batch</h3>
+    <pre><code>GET /api/batch/list?status=queued</code></pre>
+    <h3>Clear / Remove</h3>
+    <pre><code>POST /api/batch/clear
+POST /api/batch/remove
+
+{ "id": "batch_12345" }</code></pre>
+
+    <h2 id="remote">Remote</h2>
+    <h3>Screen Stream</h3>
+    <pre><code>POST /api/screen/start   -> starts SocketIO broadcast
+POST /api/screen/stop    -> stops capture</code></pre>
+    <h3>Mouse / Keyboard</h3>
+    <pre><code>POST /api/remote/mouse
+  x=1234&amp;y=567&amp;action=move|click|right_click|double_click
+
+POST /api/remote/keyboard
+  text=hello+world</code></pre>
+
+    <h2 id="vpn">VPN</h2>
+    <h3>Status</h3>
+    <pre><code>GET /api/vpn/status</code></pre>
+    <h3>Connect / Disconnect</h3>
+    <pre><code>POST /api/vpn/connect
+POST /api/vpn/disconnect
+
+location=US-NY  # optional</code></pre>
+    <h3>Login</h3>
+    <pre><code>POST /api/vpn/login</code></pre>
+    <h3>Locations</h3>
+    <pre><code>GET /api/vpn/locations</code></pre>
+
+    <h2 id="ffmpeg">FFmpeg</h2>
+    <h3>Process File</h3>
+    <pre><code>POST /api/ffmpeg/process
+Content-Type: application/x-www-form-urlencoded
+
+path=/media/plex/Movies/movie.mkv&amp;replace=true</code></pre>
+    <h3>Auto-Process</h3>
+    <pre><code>POST /api/ffmpeg/auto
+Content-Type: application/x-www-form-urlencoded
+
+path=/media/plex/Downloads/movie.mkv</code></pre>
+    <h3>Status</h3>
+    <pre><code>GET /api/ffmpeg/status</code></pre>
+    <h3>Naming Detection</h3>
+    <pre><code>GET /api/naming/detect?filename=Movie.Name.1080p.MediaHub-eng.mkv</code></pre>
+
+    <h2 id="metrics">Metrics</h2>
+    <pre><code>GET /prometheus/metrics</code></pre>
+    <p>Exposed metrics:</p>
+    <ul>
+      <li><code>plexarr_torrent_added_total</code> (provider, category)</li>
+      <li><code>plexarr_torrent_completed_total</code> (category)</li>
+      <li><code>plexarr_download_speed_bytes</code></li>
+      <li><code>plexarr_upload_speed_bytes</code></li>
+      <li><code>plexarr_active_torrents</code></li>
+      <li><code>plexarr_uploaded_files_total</code> (destination)</li>
+      <li><code>plexarr_search_requests_total</code> (provider, query_type)</li>
+      <li><code>plexarr_api_request_duration_seconds</code> (endpoint, histogram)</li>
+    </ul>
+
+    <h2 id="usenet">Usenet</h2>
+    <h3>SABnzbd Queue</h3>
+    <pre><code>GET /api/sabnzbd/queue</code></pre>
+    <h3>SABnzbd History</h3>
+    <pre><code>GET /api/sabnzbd/history</code></pre>
+    <h3>Add NZB</h3>
+    <pre><code>POST /api/sabnzbd/add
+Content-Type: application/json
+
+{ "url": "https://nzbgeek.info/...", "category": "tv", "filename": "optional.nzb" }</code></pre>
+    <h3>Pause / Resume</h3>
+    <pre><code>POST /api/sabnzbd/pause
+POST /api/sabnzbd/resume</code></pre>
+    <h3>Delete Job</h3>
+    <pre><code>POST /api/sabnzbd/delete
+Content-Type: application/json
+
+{ "id": "SABnzbd_nzo_12345" }</code></pre>
+    <h3>Speed Limit</h3>
+    <pre><code>GET /api/sabnzbd/speed</code></pre>
+    <h3>NZBGeek Search</h3>
+    <pre><code>GET /api/nzbgeek/search?q=Movie+Name&amp;category=movies&amp;limit=50</code></pre>
+
+    <h2 id="sort">Auto Sort</h2>
+    <pre><code>POST /api/sort
+path=/media/plex/Downloads/movie.mkv&amp;media_type=movie
+
+POST /api/sort/batch
+directory=/media/plex/Downloads/unsorted</code></pre>
+
+    <h2 id="watch">Watch Folder / Auto-Categorize</h2>
+    <h3>Categorize Single File</h3>
+    <pre><code>POST /api/categorize
+Content-Type: application/x-www-form-urlencoded
+
+path=/media/plex/Downloads/movie.mkv</code></pre>
+    <h3>Categorize Batch Directory</h3>
+    <pre><code>POST /api/categorize/batch
+Content-Type: application/json
+
+{ "directory": "/media/plex/Downloads/dropbox" }</code></pre>
+    <h3>Start Watch Folder</h3>
+    <pre><code>POST /api/watch/start
+Content-Type: application/json
+
+{ "watch_dir": "/media/plex/Downloads/dropbox", "interval": 5, "name": "main" }</code></pre>
+    <h3>Stop Watch Folder</h3>
+    <pre><code>POST /api/watch/stop
+Content-Type: application/json
+
+{ "name": "main" }</code></pre>
+    <h3>Watch Status</h3>
+    <pre><code>GET /api/watch/status?name=main</code></pre>
+    <h3>List Watchers</h3>
+    <pre><code>GET /api/watch/list</code></pre>
+
+    <h2 id="proxy">CORS Proxy</h2>
+    <pre><code>GET /proxy?url=https://...
+GET /proxy?url=https://...&amp;cf_bypass=1</code></pre>
+    <p>Forwards any HTTP request through the server. Add <code>?cf_bypass=1</code> to use the Cloudflare solver for a single request.</p>
+
+    <div class="page-nav">
+      <a href="docs.html"><span class="micon">arrow_back</span> Docs Overview</a>
+      <a href="config.html">Configuration <span class="micon">arrow_forward</span></a>
+    </div>
+
+  </div>
+</section>
+
+</div>
+
+<div class="footer">
+  <p>Plexarr V2.1 — <a href="https://github.com/Compromisee/Plexarr">github.com/Compromisee/Plexarr</a></p>
+</div>
+
+<div id="toast-container" style="position:fixed; bottom:16px; right:16px; display:flex; flex-direction:column; gap:6px; z-index:9999;"></div>
+
+<script src="js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plexarr V2</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+</head>
+<body>
+<canvas id="dotMatrix"></canvas>
+
+<div id="app">
+  <nav id="sidebar">
+    <div class="brand">PL</div>
+    <button class="nav-btn active" data-tab="dashboard" title="Dashboard"><span class="micon">dashboard</span></button>
+    <button class="nav-btn" data-tab="torrents" title="Torrents"><span class="micon">download</span></button>
+    <button class="nav-btn" data-tab="search" title="Search"><span class="micon">search</span></button>
+    <button class="nav-btn" data-tab="anime" title="Anime"><span class="micon">animation</span></button>
+    <button class="nav-btn" data-tab="files" title="Files"><span class="micon">folder</span></button>
+    <button class="nav-btn" data-tab="remote" title="Remote"><span class="micon">desktop_windows</span></button>
+    <button class="nav-btn" data-tab="settings" title="Settings"><span class="micon">settings</span></button>
+    <div class="spacer"></div>
+    <button class="nav-btn" onclick="window.open('https://github.com/Compromisee/Plexarr','_blank')" title="GitHub"><span class="micon">open_in_new</span></button>
+  </nav>
+
+  <div id="main">
+    <header id="topbar">
+      <div class="title">Plexarr V2</div>
+      <div class="status">
+        <span id="vpn-badge" class="badge" style="display:none;margin-right:8px;">VPN</span>
+        <span id="cf-badge" class="badge" style="display:none;margin-right:8px;">CF</span>
+        <span id="conn-dot" class="status-dot"></span>
+        <span id="conn-label">WAIT</span>
+        <span id="qb-badge" class="badge" style="display:none;margin-left:8px;">QBT</span>
+      </div>
+    </header>
+
+    <div id="contentWrap">
+      <!-- DASHBOARD -->
+      <div id="dashboard" class="page active">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-title"><span class="micon">info</span> Status</div>
+              <div id="dash-status" style="color:var(--text-2); font-size:12px; line-height:1.8;">Loading...</div>
+            </div>
+            <div class="card">
+              <div class="card-title"><span class="micon">speed</span> Torrent Speed</div>
+              <div class="row" style="justify-content:space-between; font-size:11px; color:var(--text-2);">
+                <span><span class="micon" style="font-size:11px;">south</span> <span id="dash-down">0</span> MB/s</span>
+                <span><span class="micon" style="font-size:11px;">north</span> <span id="dash-up">0</span> MB/s</span>
+              </div>
+              <div class="progress-bar" style="margin-top:8px;"><div id="dash-down-bar" class="progress-fill" style="width:0%"></div></div>
+            </div>
+            <div class="card">
+              <div class="card-title"><span class="micon">vpn_key</span> VPN</div>
+              <div id="vpn-status" style="font-size:11px; color:var(--text-2);">Not configured</div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-title"><span class="micon">history</span> Recent Activity</div>
+              <div id="dash-log" style="max-height:200px; overflow:auto; font-size:11px; color:var(--text-3); line-height:1.8;">No activity yet.</div>
+            </div>
+            <div class="card">
+              <div class="card-title"><span class="micon">bolt</span> Quick Actions</div>
+              <div class="row" style="gap:8px;">
+                <button class="btn primary" onclick="showTab('search')"><span class="micon">search</span> Search</button>
+                <button class="btn" onclick="showTab('files')"><span class="micon">folder</span> Files</button>
+                <button class="btn" onclick="showTab('remote')"><span class="micon">desktop_windows</span> Remote</button>
+                <button class="btn" onclick="showTab('settings')"><span class="micon">settings</span> Config</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TORRENTS -->
+      <div id="torrents" class="page">
+        <div class="card">
+          <div class="card-title"><span class="micon">download</span> Active Downloads</div>
+          <div id="torrent-list" style="max-height:60vh; overflow:auto;">Loading...</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="micon">assessment</span> qBittorrent Stats</div>
+          <div class="row" style="gap:16px; font-size:11px; color:var(--text-2);">
+            <span>Active: <strong id="stat-active">0</strong></span>
+            <span>Completed: <strong id="stat-done">0</strong></span>
+            <span>Ratio: <strong id="stat-ratio">0</strong></span>
+            <span>Total Down: <strong id="stat-total-down">0</strong> GB</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span class="micon">playlist_add</span> Batch Queue</div>
+          <div id="batch-queue" style="font-size:11px; color:var(--text-3);">Queue empty.</div>
+        </div>
+      </div>
+
+      <!-- SEARCH -->
+      <div id="search" class="page">
+        <div class="card">
+          <div class="card-title"><span class="micon">search</span> Search Providers</div>
+          <div class="row" style="align-items:center; gap:8px;">
+            <input type="text" id="searchQuery" placeholder="Search movies, tv, anime..." style="flex:1;" onkeydown="if(event.key==='Enter')doSearch()">
+            <select id="searchProvider" style="width:160px;">
+              <option value="">ALL</option>
+            </select>
+            <select id="searchType" style="width:120px;">
+              <option value="">ANY</option>
+              <option value="movie">MOVIE</option>
+              <option value="tv">TV</option>
+              <option value="anime">ANIME</option>
+            </select>
+            <button class="btn primary" onclick="doSearch()"><span class="micon">search</span> SEARCH</button>
+          </div>
+          <div class="row" style="gap:8px; margin-top:10px; align-items:center;">
+            <label class="toggle"><input type="checkbox" id="enrichMeta"><span class="slider"></span></label>
+            <span style="font-size:10px; color:var(--text-2); text-transform:uppercase;">Enrich Metadata</span>
+            <label class="toggle" style="margin-left:12px;"><input type="checkbox" id="batchMode"><span class="slider"></span></label>
+            <span style="font-size:10px; color:var(--text-2); text-transform:uppercase;">Batch Select</span>
+          </div>
+        </div>
+        <div id="searchMeta" style="display:none;" class="card">
+          <div class="card-title"><span class="micon">auto_awesome</span> Metadata Results</div>
+          <div id="metaResults"></div>
+        </div>
+        <div class="card" id="batchActions" style="display:none;">
+          <div class="row" style="gap:8px; justify-content:flex-end;">
+            <span id="batchCount" style="font-size:11px; color:var(--text-2); align-self:center;">0 selected</span>
+            <button class="btn primary" onclick="addBatchSelected()"><span class="micon">add</span> Add All</button>
+            <button class="btn" onclick="clearBatch()"><span class="micon">clear</span> Clear</button>
+          </div>
+        </div>
+        <div id="searchResults" class="row" style="flex-direction:column; gap:8px;"></div>
+      </div>
+
+      <!-- ANIME -->
+      <div id="anime" class="page">
+        <div class="card">
+          <div class="card-title"><span class="micon">animation</span> Anime Search (Nyaa + AnimeTosho)</div>
+          <div class="row" style="align-items:center; gap:8px;">
+            <input type="text" id="animeQuery" placeholder="Search anime..." style="flex:1;" onkeydown="if(event.key==='Enter')doAnimeSearch()">
+            <select id="animeCategory" style="width:160px;">
+              <option value="">ALL</option>
+              <option value="Anime">Anime</option>
+              <option value="Audio">Audio</option>
+              <option value="Literature">Literature</option>
+              <option value="Live Action">Live Action</option>
+            </select>
+            <button class="btn primary" onclick="doAnimeSearch()"><span class="micon">search</span> SEARCH</button>
+          </div>
+          <div class="row" style="gap:8px; margin-top:10px; align-items:center;">
+            <label class="toggle"><input type="checkbox" id="animeEnrich"><span class="slider"></span></label>
+            <span style="font-size:10px; color:var(--text-2); text-transform:uppercase;">Jikan Metadata</span>
+            <label class="toggle" style="margin-left:12px;"><input type="checkbox" id="animeBatch"><span class="slider"></span></label>
+            <span style="font-size:10px; color:var(--text-2); text-transform:uppercase;">Batch Select</span>
+          </div>
+        </div>
+        <div id="animeResults" class="row" style="flex-direction:column; gap:8px;"></div>
+      </div>
+
+      <!-- FILES -->
+      <div id="files" class="page">
+        <div class="row" style="flex-wrap:nowrap;">
+          <div class="col" style="flex:2;">
+            <div class="card">
+              <div class="card-title"><span class="micon">folder</span> File Browser</div>
+              <div class="row" style="margin-bottom:8px;">
+                <select id="fileRoot" onchange="loadFiles('', this.value)">
+                  <option value="downloads">DOWNLOADS</option>
+                  <option value="tv">TV SHOWS</option>
+                  <option value="movies">MOVIES</option>
+                  <option value="anime">ANIME</option>
+                  <option value="music">MUSIC</option>
+                </select>
+                <button class="btn small" onclick="loadFiles()"><span class="micon">refresh</span> REFRESH</button>
+              </div>
+              <div id="fileCrumbs" style="margin-bottom:8px; font-size:11px; color:var(--text-2); display:flex; gap:4px; flex-wrap:wrap;"></div>
+              <div id="fileList" class="file-list">Loading...</div>
+            </div>
+          </div>
+          <div class="col" style="flex:1;">
+            <div class="card">
+              <div class="card-title"><span class="micon">cloud_upload</span> Upload</div>
+              <div id="dropZone" class="dropzone">
+                <div style="font-size:24px; margin-bottom:8px;"><span class="micon" style="font-size:24px;">upload</span></div>
+                <div>DRAG & DROP FILES</div>
+                <div style="margin-top:4px; color:var(--text-3); font-size:10px; text-transform:uppercase;">or click to browse</div>
+              </div>
+              <input type="file" id="fileInput" style="display:none;" multiple>
+              <div class="row" style="margin-top:8px;">
+                <select id="uploadDest">
+                  <option value="downloads">DOWNLOADS</option>
+                  <option value="tv">TV SHOWS</option>
+                  <option value="movies">MOVIES</option>
+                  <option value="anime">ANIME</option>
+                  <option value="music">MUSIC</option>
+                </select>
+              </div>
+              <div class="row" style="margin-top:8px; align-items:center; gap:8px;">
+                <label class="toggle"><input type="checkbox" id="uploadSort" checked><span class="slider"></span></label>
+                <span style="font-size:10px; color:var(--text-2); text-transform:uppercase;">Auto Sort</span>
+              </div>
+              <div class="row" style="margin-top:8px;">
+                <select id="uploadMediaType">
+                  <option value="auto">AUTO</option>
+                  <option value="tv">TV</option>
+                  <option value="movie">MOVIE</option>
+                  <option value="anime">ANIME</option>
+                  <option value="music">MUSIC</option>
+                </select>
+              </div>
+              <button class="btn primary" style="margin-top:8px; width:100%;" onclick="pickFiles()"><span class="micon">folder_open</span> BROWSE FILES</button>
+              <div id="uploadStatus" style="margin-top:6px; font-size:10px; color:var(--text-3);"></div>
+            </div>
+            <div class="card">
+              <div class="card-title"><span class="micon">link</span> URL Download</div>
+              <div style="margin-bottom:8px;">
+                <input type="text" id="urlInput" placeholder="Paste URL (Rapidgator, direct...)" style="margin-bottom:6px;">
+                <select id="urlCategory" style="margin-bottom:6px;">
+                  <option value="downloads">DOWNLOADS</option>
+                  <option value="tv">TV</option>
+                  <option value="movies">MOVIES</option>
+                  <option value="anime">ANIME</option>
+                </select>
+                <button class="btn primary" style="width:100%;" onclick="downloadUrl()"><span class="micon">download</span> DOWNLOAD</button>
+              </div>
+              <div id="urlStatus" style="font-size:10px; color:var(--text-3);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REMOTE -->
+      <div id="remote" class="page">
+        <div class="card">
+          <div class="card-title"><span class="micon">desktop_windows</span> Remote Desktop</div>
+          <div style="border:1px solid var(--border); overflow:hidden;">
+            <img id="screenView" style="display:block; width:100%; max-height:65vh; object-fit:contain; background:#000;" alt="screen">
+          </div>
+          <div class="screen-controls">
+            <button class="btn primary" onclick="startScreen()"><span class="micon">play_arrow</span> START</button>
+            <button class="btn danger" onclick="stopScreen()"><span class="micon">stop</span> STOP</button>
+            <button class="btn" onclick="toggleKeyboard()"><span class="micon">keyboard</span> KEYBOARD</button>
+          </div>
+          <div id="keyboardPanel" style="display:none; margin-top:8px;">
+            <div class="row" style="gap:4px;">
+              <input type="text" id="kbInput" placeholder="Type text to send to server..." style="flex:1;">
+              <button class="btn primary" onclick="sendKeys()"><span class="micon">send</span> SEND</button>
+            </div>
+          </div>
+          <p style="color:var(--text-3); font-size:10px; text-transform:uppercase; margin-top:6px; text-align:center;">
+            Click on stream to move mouse. Remote control must be enabled in settings.
+          </p>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div id="settings" class="page">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-title"><span class="micon">dns</span> Server</div>
+              <div class="setting-row"><span class="setting-label">Host</span><input id="cfgHost" type="text" style="width:200px;"></div>
+              <div class="setting-row"><span class="setting-label">Port</span><input id="cfgPort" type="number" style="width:100px;"></div>
+              <div class="setting-row"><span class="setting-label">Debug</span><label class="toggle"><input type="checkbox" id="cfgDebug"><span class="slider"></span></label></div>
+              <div class="setting-row"><span class="setting-label">Verbose</span><label class="toggle"><input type="checkbox" id="cfgVerbose"><span class="slider"></span></label></div>
+            </div>
+            <div class="card">
+              <div class="card-title"><span class="micon">folder</span> Plex Paths</div>
+              <div class="setting-row"><span class="setting-label">TV Shows</span><input id="cfgTv" type="text" style="width:300px;"></div>
+              <div class="setting-row"><span class="setting-label">Movies</span><input id="cfgMovies" type="text" style="width:300px;"></div>
+              <div class="setting-row"><span class="setting-label">Anime</span><input id="cfgAnime" type="text" style="width:300px;"></div>
+              <div class="setting-row"><span class="setting-label">Music</span><input id="cfgMusic" type="text" style="width:300px;"></div>
+              <div class="setting-row"><span class="setting-label">Downloads</span><input id="cfgDownloads" type="text" style="width:300px;"></div>
+            </div>
+            <div class="card">
+              <div class="card-title"><span class="micon">movie</span> FFmpeg</div>
+              <div class="setting-row"><span class="setting-label">Enabled</span><label class="toggle"><input type="checkbox" id="cfgFFmpeg"><span class="slider"></span></label></div>
+              <div class="setting-row"><span class="setting-label">Default Audio</span><input id="cfgFFAudio" type="text" style="width:100px;"></div>
+              <div class="setting-row"><span class="setting-label">Default Subs</span><input id="cfgFFSub" type="text" style="width:100px;"></div>
+              <div class="setting-row"><span class="setting-label">Auto Post-Process</span><label class="toggle"><input type="checkbox" id="cfgFFPost"><span class="slider"></span></label></div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-title"><span class="micon">download</span> qBittorrent</div>
+              <div class="setting-row"><span class="setting-label">URL</span><input id="cfgQbUrl" type="text" style="width:260px;"></div>
+              <div class="setting-row"><span class="setting-label">Username</span><input id="cfgQbUser" type="text" style="width:140px;"></div>
+              <div class="setting-row"><span class="setting-label">Password</span><input id="cfgQbPass" type="password" style="width:140px;"></div>
+              <div class="setting-row"><span class="setting-label">Enabled</span><label class="toggle"><input type="checkbox" id="cfgQbEnabled"><span class="slider"></span></label></div>
+            </div>
+            <div class="card">
+              <div class="card-title"><span class="micon">key</span> API Keys</div>
+              <div class="setting-row"><span class="setting-label">TMDB Key</span><input id="cfgTmdbKey" type="text" style="width:300px;"></div>
+              <div class="setting-row"><span class="setting-label">TVDB Key</span><input id="cfgTvdbKey" type="text" style="width:300px;"></div>
+              <div class="setting-row"><span class="setting-label">Discord Webhook</span><input id="cfgDiscordHook" type="text" style="width:300px;"></div>
+            </div>
+            <div class="card">
+              <div class="card-title"><span class="micon">vpn_key</span> VPN</div>
+              <div class="setting-row"><span class="setting-label">Enabled</span><label class="toggle"><input type="checkbox" id="cfgVpnEnabled"><span class="slider"></span></label></div>
+              <div class="setting-row"><span class="setting-label">Provider</span><input id="cfgVpnProvider" type="text" style="width:140px;"></div>
+              <div class="setting-row"><span class="setting-label">Location</span><input id="cfgVpnLocation" type="text" style="width:140px;"></div>
+            </div>
+            <div class="card">
+              <div class="card-title"><span class="micon">cloud</span> Cloudflare</div>
+              <div class="setting-row"><span class="setting-label">Solver</span><label class="toggle"><input type="checkbox" id="cfgCF"><span class="slider"></span></label></div>
+            </div>
+            <div class="card">
+              <div class="card-title"><span class="micon">desktop_windows</span> Capture</div>
+              <div class="setting-row"><span class="setting-label">Screen Stream</span><label class="toggle"><input type="checkbox" id="cfgScreen"><span class="slider"></span></label></div>
+              <div class="setting-row"><span class="setting-label">Remote Control</span><label class="toggle"><input type="checkbox" id="cfgRemote"><span class="slider"></span></label></div>
+              <div class="setting-row"><span class="setting-label">FPS</span><input id="cfgFps" type="number" min="1" max="30" style="width:60px;"></div>
+              <div class="setting-row"><span class="setting-label">Quality</span><input id="cfgQual" type="number" min="10" max="95" style="width:60px;"></div>
+            </div>
+            <div class="card" style="display:flex; justify-content:flex-end; gap:8px;">
+              <button class="btn" onclick="loadSettings()"><span class="micon">refresh</span> RELOAD</button>
+              <button class="btn primary" onclick="saveSettings()"><span class="micon">save</span> SAVE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAN & WiFi — Plexarr</title>
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+<div class="dot-matrix"></div>
+<div class="grid-lines"></div>
+<div class="parallax-layer parallax-1"></div>
+<div class="parallax-layer parallax-2"></div>
+<div class="parallax-layer parallax-3"></div>
+
+<div class="mobile-topbar">
+  <div class="logo"><span class="micon" style="color:var(--accent)">terminal</span> Plexarr</div>
+  <div class="mobile-toggle" onclick="toggleSidebar()"><span class="micon">menu</span></div>
+</div>
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="index.html">
+      <span class="micon micon-lg" style="color:var(--accent)">terminal</span>
+      <span>Plexarr</span>
+    </a>
+    <div class="version">V2.1.0</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Getting Started</div>
+    <a href="index.html" class="nav-link"><span class="micon micon-sm">home</span> Home</a>
+    <a href="setup.html" class="nav-link"><span class="micon micon-sm">rocket_launch</span> Setup</a>
+    <a href="lan.html" class="nav-link"><span class="micon micon-sm">wifi</span> LAN / WiFi</a>
+
+    <div class="nav-section">Features</div>
+    <a href="features.html" class="nav-link"><span class="micon micon-sm">view_list</span> All Features</a>
+
+    <div class="nav-section">Documentation</div>
+    <a href="docs.html" class="nav-link"><span class="micon micon-sm">menu_book</span> Overview</a>
+    <a href="api.html" class="nav-link"><span class="micon micon-sm">terminal</span> API Reference</a>
+    <a href="config.html" class="nav-link"><span class="micon micon-sm">settings</span> Configuration</a>
+    <a href="integrations.html" class="nav-link"><span class="micon micon-sm">hub</span> Integrations</a>
+    <a href="troubleshooting.html" class="nav-link"><span class="micon micon-sm">bug_report</span> Troubleshooting</a>
+
+    <div class="nav-section">External</div>
+    <a href="https://github.com/Compromisee/Plexarr" target="_blank" class="nav-link"><span class="micon micon-sm">open_in_new</span> GitHub</a>
+  </nav>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<div class="main-content">
+
+<section class="hero" style="padding:60px 20px 40px;">
+  <div class="hero-inner">
+    <h1 data-text="LAN WiFi">LAN <span class="accent">WiFi</span></h1>
+    <p class="subtitle">Zero-install access. Auto-detect server presence. WiFi file sharing.</p>
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="container">
+
+    <h2>Server Detection</h2>
+    <p>Plexarr is designed to be accessed from any device on your local network. No client installation is required. The server runs on Linux Mint and binds to all interfaces by default.</p>
+
+    <div class="card" style="margin-top:20px;">
+      <div class="card-title"><span class="micon micon-sm accent">radar</span> Detect Server on This Network</div>
+      <div style="display:flex; gap:20px; align-items:center; flex-wrap:wrap;">
+        <div class="lan-status" id="lanStatus">
+          <span class="dot" id="lanDot"></span>
+          <span id="lanText">NOT CHECKED</span>
+        </div>
+        <button class="btn primary" onclick="detectLan()">
+          <span class="micon">radar</span> DETECT
+        </button>
+      </div>
+      <div style="display:flex; gap:40px; margin-top:16px; font-size:12px; color:var(--text-2); flex-wrap:wrap;">
+        <div>Your IP: <strong id="lanIp">--</strong></div>
+        <div>Server URL: <strong id="lanServer">--</strong></div>
+        <div>Status: <span class="micon" id="lanIcon" style="font-size:14px; vertical-align:middle;">help</span></div>
+      </div>
+    </div>
+
+    <div class="box tip">
+      <h4><span class="micon" style="font-size:14px;vertical-align:middle">tips_and_updates</span> How it works</h4>
+      <p>The browser attempts to reach <code>http://your-ip:8080/health</code>. If the server responds, it is online. If not, the page checks whether your current IP is in a private LAN range (192.168.x, 10.x, 172.16-31.x). Use this page to confirm your server is reachable before opening the main UI.</p>
+    </div>
+
+    <h2>WiFi File Sharing</h2>
+    <p>Upload files from any device on the same WiFi network directly into your Plex library folders. No USB cables, no cloud storage, no port forwarding. Files are auto-categorized and renamed into Plex format automatically.</p>
+
+    <h3>How It Works — Two Modes</h3>
+    <h4>Mode 1: Manual Upload with Destination</h4>
+    <ol>
+      <li>Open the Plexarr web UI on your phone, tablet, or laptop.</li>
+      <li>Navigate to the Files tab.</li>
+      <li>Drag and drop files into the upload zone, or click Browse to select them.</li>
+      <li>Choose the destination: TV Shows, Movies, Anime, Music, or Downloads.</li>
+      <li>Toggle Auto Sort if you want the renamer to process the file immediately.</li>
+      <li>The server receives the file over HTTP and places it in the correct path.</li>
+    </ol>
+
+    <h4>Mode 2: WiFi Auto-Categorize Upload (Recommended)</h4>
+    <ol>
+      <li>From any device on the same WiFi network, POST files to <code>/api/upload/wifi</code>.</li>
+      <li>No destination selection needed. The server detects the media type automatically.</li>
+      <li>Files are saved to a staging area, then auto-categorized and renamed into Plex format.</li>
+      <li>TV episodes go to <code>TV Shows/Name/Season/Name - S01E02.ext</code>.</li>
+      <li>Movies go to <code>Movies/Name (Year)/Name (Year).ext</code>.</li>
+      <li>Anime goes to <code>Anime/Name/Season/Name - S01E02.ext</code>.</li>
+      <li>Music goes to <code>Music/Artist/Album/Track.ext</code>.</li>
+    </ol>
+
+    <h3>API: WiFi Upload</h3>
+    <pre><code>POST /api/upload/wifi
+Content-Type: multipart/form-data
+
+file: [binary]
+file: [binary]  # multiple files supported</code></pre>
+    <p>Response includes the final Plex path, detected media type, and file size for each uploaded file. Errors (wrong extension, size limit) are reported per file without stopping the whole batch.</p>
+
+    <h3>Check Upload Status</h3>
+    <pre><code>GET /api/upload/wifi/status</code></pre>
+    <p>Returns max upload size, allowed extensions, and the server URL to use for uploads.</p>
+
+    <h3>Requirements</h3>
+    <ul>
+      <li>Server and client must be on the same network (WiFi or Ethernet).</li>
+      <li>Server firewall must allow port 8080 (or your configured port).</li>
+      <li>Upload size limit defaults to 5 GB per file. Increase in config if needed.</li>
+      <li>Supported formats: .mkv, .mp4, .avi, .mov, .m4v, .ts, .mp3, .flac, .aac, .m4a, .ogg, .wav.</li>
+    </ul>
+
+    <h3>Security</h3>
+    <div class="box warn">
+      <h4><span class="micon" style="font-size:14px;vertical-align:middle">warning</span> LAN Only</h4>
+      <p>WiFi sharing is designed for trusted local networks. Do not expose port 8080 to the internet without HTTPS and authentication. Use a VPN or reverse proxy for remote access.</p>
+    </div>
+
+    <h2>Client / Server Topology</h2>
+    <pre><code>                    [ WiFi Router / LAN ]
+                           |
+        +------------------+------------------+
+        |                  |                  |
+   +----v----+       +----v----+       +----v----+
+   | Phone   |       | Laptop  |       | Server  |
+   | (iOS)   |       | (Win)   |       | (Linux  |
+   |         |       |         |       | Mint)   |
+   +----+    |       +----+    |       +----+    |
+        |                  |                  |
+        |   HTTP 8080      |   HTTP 8080      |
+        +------------------+------------------+
+                             |
+                        +----v----+
+                        | Plexarr |
+                        | Flask   |
+                        | Server  |
+                        +----+    |
+                             |
+                        +----v----+
+                        | Plex    |
+                        | Library |
+                        | Folders |
+                        +---------+</code></pre>
+
+    <h2>Access URLs</h2>
+    <table>
+      <tr><th>Device</th><th>URL Format</th><th>Example</th></tr>
+      <tr><td>Same machine</td><td><code>http://localhost:8080</code></td><td>http://localhost:8080</td></tr>
+      <tr><td>Local WiFi</td><td><code>http://server-ip:8080</code></td><td>http://192.168.1.50:8080</td></tr>
+      <tr><td>VPN / Tailscale</td><td><code>http://tailscale-ip:8080</code></td><td>http://100.x.x.x:8080</td></tr>
+    </table>
+
+    <h2>Troubleshooting LAN Access</h2>
+    <table>
+      <tr><th>Problem</th><th>Solution</th></tr>
+      <tr><td>Connection refused</td><td>Check server is running. Verify firewall: <code>sudo ufw allow 8080/tcp</code></td></tr>
+      <tr><td>Page loads but no data</td><td>Ensure server is bound to 0.0.0.0, not 127.0.0.1</td></tr>
+      <tr><td>Uploads timeout</td><td>Increase Flask timeout or use a reverse proxy with chunked encoding</td></tr>
+      <tr><td>Phone cannot connect</td><td>Verify phone and server are on same WiFi subnet. Check router isolation settings.</td></tr>
+      <tr><td>Firewall blocks</td><td>Check iptables/ufw. Temporarily disable for testing: <code>sudo ufw disable</code></td></tr>
+    </table>
+
+    <div class="page-nav">
+      <a href="setup.html"><span class="micon">arrow_back</span> Setup</a>
+      <a href="docs.html">Docs Overview <span class="micon">arrow_forward</span></a>
+    </div>
+
+  </div>
+</section>
+
+</div>
+
+<div class="footer">
+  <p>Plexarr V2.1 — <a href="https://github.com/Compromisee/Plexarr">github.com/Compromisee/Plexarr</a></p>
+</div>
+
+<div id="toast-container" style="position:fixed; bottom:16px; right:16px; display:flex; flex-direction:column; gap:6px; z-index:9999;"></div>
+
+<script src="js/site.js"></script>
+</body>
+</html>

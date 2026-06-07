@@ -1,0 +1,10 @@
+pywebview>=4.4
+requests>=2.31.0
+websockets>=12.0
+pystray>=0.19
+Pillow>=10.1.0
+plyer>=2.1.0
+python-dotenv>=1.0.0
+# Optional: for building executables
+# pyinstaller>=6.0
+# nuitka>=2.0
