@@ -1,0 +1,50 @@
+name: Build Executables
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pyinstaller pywebview requests websockets pystray Pillow plyer
+      - run: cd client && pyinstaller --onefile --windowed --name PlexarrClient main.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PlexarrClient-windows
+          path: client/dist/PlexarrClient.exe
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pyinstaller pywebview requests websockets pystray Pillow plyer
+      - run: cd client && pyinstaller --onefile --windowed --name PlexarrClient main.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PlexarrClient-macos
+          path: client/dist/PlexarrClient
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: sudo apt install libgtk-3-dev libwebkitgtk-6.0-4
+      - run: pip install pyinstaller pywebview requests websockets pystray Pillow plyer
+      - run: cd client && pyinstaller --onefile --windowed --name PlexarrClient main.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PlexarrClient-linux
+          path: client/dist/PlexarrClient
